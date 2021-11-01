@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "noImplicitAny": false,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": [
+      "es2018",
+      "es2019",
+    ],
+    "module": "commonjs",
+    "target": "es2018",
+    "typeRoots": [
+      "node_modules/@types",
+      "src/types"
+    ],
+    "outDir": "CuwellWeb/dist",
+    "plugins": [
+      {
+        "transform": "ts-nameof",
+        "type": "raw"
+      }
+    ]
+  },
+  "include": [
+    "./src/**/*",
+    "CuwellWeb/jest.config.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

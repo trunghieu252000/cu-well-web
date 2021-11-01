@@ -31,6 +31,7 @@
         "bcryptjs": "2.4.3",
         "body-parser": "1.19.0",
         "class-validator": "0.13.1",
+        "concurrently": "^6.3.0",
         "cors": "2.8.5",
         "cross-env": "5.2.0",
         "dotenv": "10.0.0",
@@ -88,7 +89,7 @@
         "eslint-plugin-prettier": "3.3.1",
         "eslint-plugin-promise": "4.3.1",
         "ncp": "2.0.0",
-        "nodemon": "2.0.2",
+        "nodemon": "^2.0.2",
         "prettier": "2.2.1",
         "pug-loader": "2.4.0",
         "rimraf": "3.0.0",
@@ -96,7 +97,7 @@
         "ttypescript": "1.5.8",
         "typescript": "3.7.4",
         "typings": "2.1.1",
-        "webpack": "5.61.0",
+        "webpack": "4.29.6",
         "webpack-cli": "3.2.3",
         "webpack-node-externals": "1.7.2"
     }
