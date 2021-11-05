@@ -16,6 +16,9 @@ export interface ValidationFailure {
   message?: string;
 }
 
+enum BaseValidationFailure {
+  SchemaConstraintsViolated = 'SchemaConstraintsViolated',
+}
 export abstract class Validator<
   TModel,
   TDocument extends Document,
@@ -38,8 +41,4 @@ export abstract class Validator<
 
     return failures;
   }
-}
-
-enum BaseValidationFailure {
-  SchemaConstraintsViolated = 'SchemaConstraintsViolated',
 }
