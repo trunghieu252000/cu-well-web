@@ -1,9 +1,9 @@
-// import * as server from '../server';
+import * as server from '../server';
 
-// import app, {connectToDb} from './installer';
+import app, {connectToDb} from './installer';
 
-// connectToDb();
+connectToDb();
 
 console.info('Staring the server...');
 
-// server.start(app, 5001);
+server.start(app, 5001);

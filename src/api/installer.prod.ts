@@ -1,5 +1,5 @@
-// import app, {connectToDb} from './installer';
+import app, {connectToDb} from './installer';
 
-// const dbConnected = false;
+const dbConnected = false;
 
-// exports.handler = async (event, context) => {};
+exports.handler = async (event, context) => {};

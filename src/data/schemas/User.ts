@@ -1,12 +1,11 @@
 import {createSchema, Type} from 'ts-mongoose';
-import aggregatePaginate from 'mongoose-aggregate-paginate-v2';
+
+import {AddressSchema} from './address';
+import {RoleSchema} from './role';
 
 export enum Role {
   Admin = 'Admin',
-  HR = 'HR',
   Employee = 'Employee',
-  LineManager = 'LineManager',
-  Finance = 'Finance',
 }
 
 export const UserSchema = createSchema(
@@ -17,9 +16,15 @@ export const UserSchema = createSchema(
       match: [/^[\w-\\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Please fill a valid email address'],
     }),
     password: Type.string({required: true}),
+    name: Type.string({required: true}),
+    phone: Type.string({required: true}),
+    status: Type.string({required: true}),
+    role: Type.array().of(Type.ref(Type.objectId()).to('Role', RoleSchema)),
+    ratingAverage: Type.array().of(Type.objectId()),
+    addressId: Type.ref(Type.objectId({required: true})).to('Address', AddressSchema),
     activatedUser: Type.boolean({required: true}),
   },
-  {timestamps: true},
-).plugin(aggregatePaginate);
+  {timestamps: true, versionKey: false, strict: false, strictQuery: true},
+);
 
 UserSchema.set('toJSON', {virtuals: true});
