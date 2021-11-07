@@ -25,7 +25,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.static('public'));
 
 app.use(function (req, res, next) {
-  console.info('REQUESTTT', req.method, req.url, req.body);
+  console.info('REQUEST', req.method, req.url, req.body);
   next();
 });
 
