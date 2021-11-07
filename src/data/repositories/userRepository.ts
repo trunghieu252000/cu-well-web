@@ -2,9 +2,9 @@ import {injectable} from 'tsyringe';
 import mongoose from 'mongoose';
 import {ExtractDoc} from 'ts-mongoose';
 
-import {DbContext} from '../dbContext';
+import {UserSchema} from '../schemas/User';
 import {User} from '../schemas';
-import {UserSchema} from '../schemas/user';
+import {DbContext} from '../dbContext';
 
 import {RepositoryBase, IRepositoryBase} from './repositoryBase';
 

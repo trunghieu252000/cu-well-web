@@ -2,7 +2,8 @@ import {ExtractDoc} from 'ts-mongoose';
 
 import {AddressSchema} from './address';
 import {RoleSchema} from './role';
-import {UserSchema} from './user';
+import {UserSchema} from './User';
+// import {UserSchema} from './user';
 
 export type User = ExtractDoc<typeof UserSchema>;
 export type Role = ExtractDoc<typeof RoleSchema>;
