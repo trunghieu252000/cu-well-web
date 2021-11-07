@@ -8,9 +8,9 @@ const isProd = env === 'production';
 
 module.exports = {
   entry: {
-    ['api']: isProd
-      ? path.join(__dirname, './src/api/installer.prod.ts')
-      : path.join(__dirname, './src/api/installer.dev.ts'),
+    ['api']: isProd ?
+      path.join(__dirname, './src/api/installer.prod.ts') :
+      path.join(__dirname, './src/api/installer.dev.ts'),
   },
   output: {
     path: path.join(__dirname, './dist'),
@@ -21,8 +21,7 @@ module.exports = {
   target: 'node',
   externals: [require('webpack-node-externals')()],
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'ts-loader',
@@ -33,7 +32,7 @@ module.exports = {
         loader: 'ts-loader',
         options: {
           getCustomTransformers: () => ({
-            before: [tsNameof],
+            before: [tsNameof]
           }),
         },
       },

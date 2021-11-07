@@ -18,7 +18,7 @@
       "node_modules/@types",
       "src/types"
     ],
-    "outDir": "CuwellWeb/dist",
+    "outDir": "cuwell/dist",
     "plugins": [
       {
         "transform": "ts-nameof",
@@ -28,7 +28,7 @@
   },
   "include": [
     "./src/**/*",
-    "CuwellWeb/jest.config.js"
+    "cuwell/jest.config.js"
   ],
   "exclude": [
     "node_modules"
