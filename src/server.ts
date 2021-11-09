@@ -1,14 +1,14 @@
 import * as http from 'http';
 
 export function start(app, port = 5000, socket?) {
-  app.set('port', port);
+  app.set('port', process.env.PORT || port);
 
   const server = http.createServer(app);
 
   //init socket if available
   socket && socket(server);
 
-  server.listen(port);
+  server.listen(process.env.PORT || port);
   server.on('error', onError);
   server.on('listening', onListening);
 
