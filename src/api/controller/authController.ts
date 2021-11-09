@@ -28,6 +28,14 @@ export class AuthController {
             }),
           );
           break;
+        case AuthenticationFailure.ForBiddenAccess:
+          res.send(
+            NotFoundResult({
+              reason: failure.reason,
+              message: 'Forbidden Access',
+            }),
+          );
+          break;
         case AuthenticationFailure.InvalidCredentials:
           res.send(
             BadRequestResult({

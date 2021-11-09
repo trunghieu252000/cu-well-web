@@ -16,6 +16,8 @@ export interface IUserRepository
   getUserByEmail(email: string): Promise<User>;
   changePassword(email: string, newPassword: string): Promise<User>;
   getRoleNameByUserId(userId: string): Promise<string[]>;
+  updateUserById(userId: string, user: User): Promise<User>;
+  updateStatusOfUser(userId: string, status: boolean): Promise<User>;
 }
 @injectable()
 export class UserRepository
@@ -49,5 +51,16 @@ export class UserRepository
 
   public async getRoleNameByUserId(userId: string): Promise<string[]> {
     return await this.model.findById(userId).populate('role', 'name').lean().exec();
+  }
+
+  public async updateUserById(userId: string, user: User): Promise<User> {
+    return await this.model.findByIdAndUpdate(userId, user, {new: true}).lean().exec();
+  }
+
+  public async updateStatusOfUser(userId: string, status: boolean): Promise<User> {
+    return await this.model
+      .findByIdAndUpdate(userId, {activatedUser: status}, {new: true})
+      .lean()
+      .exec();
   }
 }

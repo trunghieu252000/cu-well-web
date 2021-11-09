@@ -1,6 +1,5 @@
 import {createSchema, Type} from 'ts-mongoose';
 
-import {AddressSchema} from './address';
 import {RoleSchema} from './role';
 
 export enum Role {
@@ -18,10 +17,13 @@ export const UserSchema = createSchema(
     password: Type.string({required: true}),
     name: Type.string({required: true}),
     phone: Type.string({required: true}),
-    status: Type.string({required: true}),
     role: Type.array().of(Type.ref(Type.objectId()).to('Role', RoleSchema)),
     ratingAverage: Type.array().of(Type.objectId()),
-    addressId: Type.ref(Type.objectId({required: true})).to('Address', AddressSchema),
+    address: {
+      city: Type.string({required: true}),
+      district: Type.string({required: true}),
+      commune: Type.string({required: true}),
+    },
     activatedUser: Type.boolean({required: true}),
   },
   {timestamps: true, versionKey: false, strict: false, strictQuery: true},

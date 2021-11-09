@@ -6,14 +6,14 @@ import cors from 'cors';
 
 import {DbContext} from '../data/dbContext';
 
-// import isAuth from './middlewares/isAuth';
-// import withCurrentUser from './middlewares/withCurrentUser';
+import isAuth from './middlewares/isAuth';
+import withCurrentUser from './middlewares/withCurrentUser';
 import {interceptResponse} from './middlewares/interceptResponse';
 import {IRequest, IResponse} from './types';
 import {ServerErrorResult} from './httpResponses';
 import container from './containerInstaller';
 import userRouter from './routes/userRoute';
-// import authRouter from './routes/authRoute';
+import authRouter from './routes/authRoute';
 import roleRouter from './routes/roleRoute';
 
 const app = express();
@@ -31,9 +31,9 @@ app.use(function (req, res, next) {
 
 app.use(interceptResponse);
 
-// app.use('/api/auth', authRouter);
-// app.use(isAuth);
-// app.use(withCurrentUser);
+app.use('/api/auth', authRouter);
+app.use(isAuth);
+app.use(withCurrentUser);
 app.use('/api/roles', roleRouter);
 app.use('/api/users', userRouter);
 

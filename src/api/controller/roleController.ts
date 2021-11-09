@@ -42,9 +42,9 @@ export class RoleController {
   }
 
   public async getRoleDetails(req: IRequest, res: IResponse) {
-    const {userId} = req.params;
+    const {roleId} = req.params;
 
-    const {result: role, status, failure} = await this.roleService.getRoleDetails(userId);
+    const {result: role, status, failure} = await this.roleService.getRoleDetails(roleId);
 
     if (status === ServiceResponseStatus.Failed) {
       switch (failure.reason) {

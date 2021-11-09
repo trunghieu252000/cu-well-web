@@ -15,6 +15,6 @@ router.post(
   wrapper(roleController.createRole),
 );
 router.get('/', wrapper(roleController.getAllRoles));
-router.get('/:userId', wrapper(roleController.getRoleDetails));
+router.get('/:roleId', wrapper(roleController.getRoleDetails));
 
 export default router;

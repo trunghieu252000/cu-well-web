@@ -7,6 +7,9 @@ export enum JoiSchema {
   changePasswordData = 'changePasswordData',
   role = 'role',
   loginData = 'loginData',
+  newUserData = 'newUserData',
+  userStatusData = 'userStatusData',
+  userData = 'userData',
 }
 
 export function joiValidator(schema: any, param: string) {
@@ -48,6 +51,38 @@ export const JoiValidationSchema = {
     .keys({
       name: Joi.string().required(),
     })
+    .required()
+    .options({abortEarly: false}),
+
+  newUserData: Joi.object({
+    email: Joi.string().email().trim().required(),
+    name: Joi.string().required(),
+    phone: Joi.string().required(),
+    address: {
+      city: Joi.string().required(),
+      district: Joi.string().required(),
+      commune: Joi.string().required(),
+    },
+  })
+    .required()
+    .options({abortEarly: false}),
+
+  userStatusData: Joi.object({
+    userId: Joi.string().required(),
+    status: Joi.boolean().required(),
+  })
+    .required()
+    .options({abortEarly: false}),
+
+  userData: Joi.object({
+    name: Joi.string().required(),
+    phone: Joi.string().required(),
+    address: {
+      city: Joi.string().required(),
+      district: Joi.string().required(),
+      commune: Joi.string().required(),
+    },
+  })
     .required()
     .options({abortEarly: false}),
 };

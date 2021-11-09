@@ -27,6 +27,7 @@ export enum AuthenticationFailure {
   LoginNotAllowed = 'LoginNotAllowed',
   BadRequest = 'BadRequest',
   PasswordNotMatch = 'PasswordNotMatch',
+  ForBiddenAccess = 'ForBiddenAccess',
 }
 
 export interface IAuthService {
@@ -137,7 +138,12 @@ export class AuthService implements IAuthService {
         failure: {reason: AuthenticationFailure.UserNotFound},
       };
     }
-    const role = await this.userRepository.getRoleNameByUserId(user._id.toString());
+    if (user.activatedUser === false) {
+      return {
+        status: ServiceResponseStatus.Failed,
+        failure: {reason: AuthenticationFailure.ForBiddenAccess},
+      };
+    }
     const isMatch = await bcrypt.compare(loginData.password, user.password);
 
     if (!isMatch) {
@@ -147,6 +153,7 @@ export class AuthService implements IAuthService {
       };
     }
 
+    const role = await this.userRepository.getRoleNameByUserId(user._id.toString());
     const tokenData = {
       id: user._id.toHexString(),
       email: user.email,
