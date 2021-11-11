@@ -16,7 +16,7 @@ export default {
   mailer: {
     host: 'smtp.gmail.com',
     port: 465,
-    user: 'doanpbl6cuwell@gmail.com',
-    pass: 'Chinsokhong99',
+    user: 'cuwellpbl6@gmail.com',
+    pass: 'Cuwell@9999',
   },
 };

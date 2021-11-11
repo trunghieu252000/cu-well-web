@@ -13,11 +13,11 @@ router.get('/user-roles/:userId', wrapper(userController.getAllRoleNameOfUser));
 
 router.get('/:userId', wrapper(userController.getUserDetails));
 
-router.post(
-  '/',
-  joiValidator(JoiValidationSchema.newUserData, JoiSchema.newUserData),
-  wrapper(userController.createUserWithRoleClient),
-);
+// router.post(
+//   '/',
+//   joiValidator(JoiValidationSchema.newUserData, JoiSchema.newUserData),
+//   wrapper(userController.createUserWithRoleClient),
+// );
 
 router.put(
   '/:userId',
