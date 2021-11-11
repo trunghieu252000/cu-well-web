@@ -8,7 +8,7 @@ export default {
     privateKey: 'cHJpdmF0ZUtleS1jdVdlbGw',
     issuer: 'cu-well',
     audience: 'client',
-    tokenLifeTime: '720h',
+    tokenLifeTime: '360h',
   },
   adminMail: {
     admin: 'doanpbl6cuwell@gmail.com',

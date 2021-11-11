@@ -154,13 +154,16 @@ export class AuthService implements IAuthService {
     }
 
     const role = await this.userRepository.getRoleNameByUserId(user._id.toString());
+    const roleName = role['role'];
+    const nameRole = roleName.map((i) => i.name);
     const tokenData = {
       id: user._id.toHexString(),
       email: user.email,
-      role: role,
+      role: nameRole,
       name: user.name,
     };
 
+    console.log('tokenData: ', tokenData);
     const token = this.generateToken(tokenData);
 
     return {
@@ -196,7 +199,7 @@ export class AuthService implements IAuthService {
     console.log('token: ', token);
 
     try {
-      // await this.userMailerReceiver.receiveOnResetPassword(user.email, token);
+      await this.userMailerReceiver.receiveOnResetPassword(user.email, token);
     } catch (err) {
       return {
         status: ServiceResponseStatus.Failed,
