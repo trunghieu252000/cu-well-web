@@ -1,3 +1,4 @@
+import swaggerUi from 'swagger-ui-express';
 import * as dotenv from 'dotenv';
 dotenv.config();
 import 'reflect-metadata';
@@ -6,6 +7,7 @@ import cors from 'cors';
 
 import {DbContext} from '../data/dbContext';
 
+import * as swaggerDocument from './swagger.json';
 import isAuth from './middlewares/isAuth';
 import withCurrentUser from './middlewares/withCurrentUser';
 import {interceptResponse} from './middlewares/interceptResponse';
@@ -28,7 +30,7 @@ app.use(function (req, res, next) {
   console.info('REQUEST', req.method, req.url, req.body);
   next();
 });
-
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(interceptResponse);
 
 app.use('/api/auth', authRouter);
