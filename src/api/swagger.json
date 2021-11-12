@@ -7,14 +7,14 @@
     },
     "servers": [
         {
-            "url": "/api/",
+            "url": "http://localhost:5001/api",
             "description": "User Service"
         }
     ],
     "tags": [
         {
-            "name": "Cats",
-            "description": "API for cats in the system"
+            "name": "Auth",
+            "description": "API for auth in the system"
         }
     ],
     "consumes": [
@@ -23,34 +23,38 @@
     "produces": [
         "application/json"
     ],
+    "components": {
+     "securitySchemes": {
+         "Bearer": {
+            "description": "",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+         }
+     }
+   },
+    "security": [   
+        {
+          "Bearer": [
+
+          ]
+        }
+      ],
+
     "paths": {
-        "/cats": {
-            "get": {
-                "tags": [
-                    "Cats"
-                ],
-                "summary": "Get all cats in system",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/Cats"
-                        }
-                    }
-                }
-            },
+        "/auth/login": {
             "post": {
                 "tags": [
-                    "Cats"
+                    "Auth"
                 ],
-                "summary": "Create a new cat in system",
+                "summary": "Login to system",
                 "requestBody": {
-                    "description": "Cat Object",
+                    "description": "Login Data",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/Cat"
+                                "$ref": "#/definitions/loginData"
                             }
                         }
                     }
@@ -60,38 +64,157 @@
                 ],
                 "responses": {
                     "200": {
+                        "statusCode": "200",
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/id"
                         }
                     },
-                    "400": {
-                        "description": "Failed. Bad post data."
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
                     }
                 }
             }
         },
-        "/cats/{id}": {
+        "/auth/":{
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Create User",
+                "requestBody": {
+                    "description": "New User Data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/newUserData"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "statusCode": "200",
+                        "description": "OK",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/newUserData"
+                            }
+                        }
+                    }
+                    },
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+                }
+            }
+        }, 
+        "/auth/forgot-password":{
+            "patch": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Forgot password",
+                "requestBody": {
+                    "description": "Forgot password Data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/forgotPassword"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "statusCode": "200",
+                        "description": "Ok",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/forgotPassword"
+                            }
+                        }
+                    }
+                    },
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+                }
+            }
+        },    
+        "/users/change-password":{
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Forgot password",
+                "requestBody": {
+                    "description": "Forgot password Data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/changePassword"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "statusCode": "200",
+                        "description": "Ok",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/changePassword"
+                            }
+                        }
+                    }
+                    },
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+                }
+            }
+        },    
+        "/users/{userId}": {
             "parameters": [
                 {
-                    "name": "id",
+                    "name": "userId",
                     "in": "path",
                     "required": true,
-                    "description": "ID of the cat that we want to match",
+                    "description": "userId you want to match",
                     "type": "string"
                 }
             ],
             "get": {
                 "tags": [
-                    "Cats"
+                    "Users"
                 ],
-                "summary": "Get cat with given ID",
+                "summary": "Get User with userId",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "userId",
                         "required": true,
-                        "description": "Cat with id",
+                        "description": "User with userId",
                         "schema": {
                             "$ref": "#/definitions/id"
                         }
@@ -101,21 +224,22 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Cat"
+                            "$ref": "#/definitions/userDetails"
                         }
                     },
                     "404": {
-                        "description": "Failed. Cat not found."
+                        "statusCode": "404",
+                        "description": "User not found"
                     }
                 }
             },
-            "put": {
-                "summary": "Update cat with given ID",
+            "patch": {
+                "summary": "Update User with userId",
                 "tags": [
-                    "Cats"
+                    "Users"
                 ],
                 "requestBody": {
-                    "description": "Cat Object",
+                    "description": "User Object",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -128,7 +252,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "userId",
                         "required": true,
                         "description": "Cat with new values of properties",
                         "schema": {
@@ -144,24 +268,162 @@
                         }
                     },
                     "400": {
-                        "description": "Failed. Bad post data."
+                        "description": "Failed. Bad post data.",
+                        "schema": {
+                            "$ref": "#/definitions/Cat"
+                        }
                     },
                     "404": {
                         "description": "Failed. Cat not found."
                     }
                 }
-            },
-            "delete": {
-                "summary": "Delete cat with given ID",
+            }
+        },
+         "/users":{
+            "get": {
                 "tags": [
-                    "Cats"
+                    "Users"
                 ],
+                "summary": "Get all users in system",
+                "responses": {
+                  "200": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Users"
+                            }
+                        }
+                    }
+                  }
+              }
+          
+            }
+        },
+        "/users/status":{
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update status of User",
+                "requestBody": {
+                    "description": "User status",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/userStatus"
+                            }
+                        }
+                    }
+                },
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "userId",
                         "required": true,
-                        "description": "Delete Cat with id",
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "statusCode": "200",
+                        "description": "Ok",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/userStatus"
+                            }
+                        }
+                    }
+                    },
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+                }
+            }
+        },
+        "/users/rating":{
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update rating of User",
+                "requestBody": {
+                    "description": "User status",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/userRating"
+                            }
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "required": true,
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/id"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "statusCode": "200",
+                        "description": "Ok",
+                        "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/userRating"
+                            }
+                        }
+                    }
+                    },
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+                }
+            }
+        },
+        "/users/seller":{
+            "parameters": [
+                {
+                    "name": "userId",
+                    "in": "path",
+                    "required": true,
+                    "description": "userId you want to match",
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get Seller information",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "required": true,
+                        "description": "Seller with userId",
                         "schema": {
                             "$ref": "#/definitions/id"
                         }
@@ -171,49 +433,93 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/id"
+                            "$ref": "#/definitions/sellerResult"
                         }
                     },
                     "404": {
-                        "description": "Failed. Cat not found."
+                        "statusCode": "404",
+                        "description": "Seller not found"
                     }
                 }
             }
-        }
+        }   
     },
     "definitions": {
+        "loginData":{
+            "type": "object",
+            "properties": {
+              "loginData":{
+                "type": "object",
+                "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+              }}
+            }
+        },
+        "forgotPassword":{
+            "type": "object",
+            "properties": {              
+                "email": {
+                    "type": "string"
+                }
+              }            
+        },
+        "newUserData":{
+            "type": "object",
+            "properties": {
+              "newUserData":{
+                "type": "object",
+                "properties": {
+                  "email": {
+                      "type": "string"
+                  },
+                  "name": {
+                      "type": "string"
+                  },
+                  "phone": {
+                      "type": "string"
+                  },
+                  "address":{
+                    "type": "object",
+                    "properties": {
+                      "city": {
+                          "type": "string"
+                      },
+                      "district": {
+                          "type": "string"
+                      },
+                      "commune": {
+                          "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        },
+        "changePassword":{
+            "type": "object",
+            "properties": {
+              "changePasswordData":{
+                "type": "object",
+                "properties": {
+                "oldPassword": {
+                    "type": "string"
+                },
+                "newPassword": {
+                    "type": "string"
+                }
+              }}
+            }
+        },
         "id": {
             "properties": {
                 "uuid": {
                     "type": "string"
-                }
-            }
-        },
-        "Cat": {
-            "type": "object",
-            "properties": {
-                "genus": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "isHungry": {
-                    "type": "boolean"
-                },
-                "lastFedDate": {
-                    "type": "string"
-                }
-            }
-        },
-        "Cats": {
-            "type": "object",
-            "properties": {
-                "cats": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/definitions/Cat"
-                    }
                 }
             }
         }
