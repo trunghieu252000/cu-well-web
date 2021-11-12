@@ -80,8 +80,10 @@ export class UserService implements IUserService {
 
   public async getUserDetails(
     userId: string,
-  ): Promise<ServiceResponse<User, ServiceFailure<GetUserFailure>>> {
+  ): Promise<ServiceResponse<any, ServiceFailure<GetUserFailure>>> {
     const user = await this.userRepository.getUserById(userId);
+    const roleName: any = user['role'];
+    const nameRole = roleName.map((i) => i.name);
 
     if (!user) {
       return {
@@ -92,7 +94,7 @@ export class UserService implements IUserService {
 
     return {
       status: ServiceResponseStatus.Success,
-      result: user,
+      result: {...user, role: nameRole},
     };
   }
 

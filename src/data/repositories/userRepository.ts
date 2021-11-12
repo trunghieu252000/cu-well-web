@@ -34,7 +34,12 @@ export class UserRepository
   }
 
   public async getUserById(id: string): Promise<User> {
-    return await this.model.findById(id).lean().exec();
+    return await this.model
+      .findById(id)
+      .populate('role', 'name')
+      .select('-_id -password -activatedUser -createdAt -updatedAt -__v')
+      .lean()
+      .exec();
   }
 
   public async getUserByEmail(email: string): Promise<User> {
