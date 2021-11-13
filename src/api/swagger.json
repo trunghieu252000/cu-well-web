@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:5001/api",
+            "url": "https://cuwell-authentication.herokuapp.com/api",
             "description": "User Service"
         }
     ],
