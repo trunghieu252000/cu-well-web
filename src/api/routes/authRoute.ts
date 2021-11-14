@@ -21,6 +21,6 @@ router.post(
   joiValidator(JoiValidationSchema.loginData, JoiSchema.loginData),
   authController.login,
 );
-router.post('/forgot-password', wrapper(authController.forgotPassword));
+router.patch('/forgot-password', wrapper(authController.forgotPassword));
 
 export default router;
