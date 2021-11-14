@@ -183,18 +183,18 @@ export class AuthService implements IAuthService {
         failure: {reason: AuthenticationFailure.UserNotFound},
       };
     }
-
     const role = await this.userRepository.getRoleNameByUserId(user._id.toString());
-
-    const resetPasswordToken = {
+    const roleName = role['role'];
+    const nameRole = roleName.map((i) => i.name);
+    const tokenData = {
       id: user._id.toHexString(),
       email: user.email,
+      role: nameRole,
       name: user.name,
-      role: role,
     };
 
     const secret = config.secretKeyResetPassword;
-    const token = this.generateToken(resetPasswordToken, secret, '30m');
+    const token = this.generateToken(tokenData, secret, '30m');
 
     console.log('token: ', token);
 
