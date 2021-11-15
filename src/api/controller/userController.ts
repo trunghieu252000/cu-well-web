@@ -2,6 +2,7 @@ import {inject, injectable} from 'tsyringe';
 
 import {ServiceResponseStatus} from '../../services/types/serviceResponse';
 import {
+  ChangePasswordFailure,
   CreateUserFailure,
   GetAllRoleNamesOfUserFailure,
   GetUserFailure,
@@ -10,7 +11,13 @@ import {
 } from '../../services/userService';
 import {IRequest, IResponse} from '../types';
 
-import {NotFoundResult, OkResult, ConflictResult} from './../httpResponses';
+import {
+  NotFoundResult,
+  OkResult,
+  ConflictResult,
+  BadRequestResult,
+  NoContentResult,
+} from './../httpResponses';
 
 @injectable()
 export class UserController {
@@ -20,6 +27,8 @@ export class UserController {
     this.updateStatusOfUser = this.updateStatusOfUser.bind(this);
     this.getUserDetails = this.getUserDetails.bind(this);
     this.getAllRoleNameOfUser = this.getAllRoleNameOfUser.bind(this);
+    this.changePassword = this.changePassword.bind(this);
+    this.getAllUsers = this.getAllUsers.bind(this);
   }
 
   public async getUserDetails(req: IRequest, res: IResponse) {
@@ -131,5 +140,36 @@ export class UserController {
     }
 
     return res.send(OkResult(updatedUser));
+  }
+
+  public async changePassword(req: IRequest, res: IResponse) {
+    const {email} = req.user;
+    const {oldPassword, newPassword} = req.body.changePasswordData;
+
+    const {status, failure} = await this.userService.changePassword(
+      email,
+      newPassword,
+      oldPassword,
+    );
+
+    if (status === ServiceResponseStatus.Failed) {
+      switch (failure.reason) {
+        case ChangePasswordFailure.IncorrectPassword:
+          return res.send(
+            BadRequestResult({
+              reason: failure.reason,
+              message: 'Password is incorrect',
+            }),
+          );
+      }
+    }
+
+    return res.send(NoContentResult());
+  }
+
+  public async getAllUsers(req: IRequest, res: IResponse) {
+    const users = await this.userService.getAllUsers();
+
+    return res.send(OkResult(users.result));
   }
 }

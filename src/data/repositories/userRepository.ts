@@ -43,11 +43,19 @@ export class UserRepository
   }
 
   public async getUserByEmail(email: string): Promise<User> {
-    return await this.model.findOne({email}).lean().exec();
+    return await this.model
+      .findOne({email})
+      .populate('role', 'name')
+      .select('-_id -password -activatedUser -createdAt -updatedAt -__v')
+      .lean()
+      .exec();
   }
 
   public async getAllUsers(): Promise<User[]> {
-    return await this.model.find();
+    return await this.model
+      .find()
+      .populate('role', 'name')
+      .select('-password -activatedUser -createdAt -updatedAt -__v');
   }
 
   public async changePassword(email: string, newPassword: string): Promise<User> {

@@ -13,11 +13,7 @@ router.get('/user-roles/:userId', wrapper(userController.getAllRoleNameOfUser));
 
 router.get('/:userId', wrapper(userController.getUserDetails));
 
-// router.post(
-//   '/',
-//   joiValidator(JoiValidationSchema.newUserData, JoiSchema.newUserData),
-//   wrapper(userController.createUserWithRoleClient),
-// );
+router.get('/', wrapper(userController.getAllUsers));
 
 router.put(
   '/:userId',
@@ -29,5 +25,11 @@ router.patch(
   '/user-status',
   joiValidator(JoiValidationSchema.userStatusData, JoiSchema.userStatusData),
   wrapper(userController.updateStatusOfUser),
+);
+
+router.patch(
+  '/password',
+  joiValidator(JoiValidationSchema.changePasswordData, JoiSchema.changePasswordData),
+  wrapper(userController.changePassword),
 );
 export default router;

@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 
+import bcrypt from 'bcryptjs';
 import {inject, injectable} from 'tsyringe';
 
 import {IRoleRepository} from '../data/repositories/roleRepository';
@@ -21,6 +22,9 @@ export enum UpdateUserFailure {
 export enum GetAllRoleNamesOfUserFailure {
   'RoleNotFound' = 'RoleNotFound',
 }
+export enum ChangePasswordFailure {
+  IncorrectPassword = 'IncorrectPassword',
+}
 
 export interface IUserService {
   createUserWithRoleClient(
@@ -38,6 +42,12 @@ export interface IUserService {
     userId: string,
     status: boolean,
   ): Promise<ServiceResponse<User, ServiceFailure<UpdateUserFailure>>>;
+  changePassword(
+    email: string,
+    newPassword: string,
+    oldPassword: string,
+  ): Promise<ServiceResponse<ServiceFailure<ChangePasswordFailure>>>;
+  getAllUsers(): Promise<ServiceResponse>;
 }
 
 @injectable()
@@ -84,6 +94,8 @@ export class UserService implements IUserService {
     const user = await this.userRepository.getUserById(userId);
     const roleName: any = user['role'];
     const nameRole = roleName.map((i) => i.name);
+    const rating = user.ratingAverage.map((i) => i.rating);
+    const ratingAver = rating.reduce((prev, curr) => prev + curr) / rating.length;
 
     if (!user) {
       return {
@@ -94,7 +106,7 @@ export class UserService implements IUserService {
 
     return {
       status: ServiceResponseStatus.Success,
-      result: {...user, role: nameRole},
+      result: {...user, role: nameRole, ratingAverage: ratingAver},
     };
   }
 
@@ -155,6 +167,58 @@ export class UserService implements IUserService {
     return {
       status: ServiceResponseStatus.Success,
       result: updatedUser,
+    };
+  }
+
+  public async changePassword(
+    email: string,
+    newPassword: string,
+    oldPassword: string,
+  ): Promise<ServiceResponse<ServiceFailure<ChangePasswordFailure>>> {
+    const user = await this.userRepository.getUserByEmail(email);
+    const isPasswordMatched = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isPasswordMatched) {
+      return {
+        status: ServiceResponseStatus.Failed,
+        failure: {reason: ChangePasswordFailure.IncorrectPassword},
+      };
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    await this.userRepository.changePassword(email, hashedPassword);
+
+    return {
+      status: ServiceResponseStatus.Success,
+    };
+  }
+
+  public async getAllUsers(): Promise<ServiceResponse> {
+    const users = await this.userRepository.getAllUsers();
+    const usersLists = [];
+
+    for (let i = 0; i < users.length; i++) {
+      const roleName: any = users[i]['role'];
+      const nameRole = roleName.map((role) => role.name);
+      const rating = users[i].ratingAverage.map((aver) => aver.rating);
+      const ratingAver = rating.reduce((prev, curr) => prev + curr) / rating.length;
+      const userDetails = {
+        id: users[i]['_id'],
+        email: users[i]['email'],
+        name: users[i]['name'],
+        phone: users[i]['phone'],
+        address: users[i]['address'],
+        role: nameRole,
+        ratingAverage: ratingAver,
+      };
+
+      usersLists.push(userDetails);
+    }
+
+    return {
+      result: usersLists,
+      status: ServiceResponseStatus.Success,
     };
   }
 }
