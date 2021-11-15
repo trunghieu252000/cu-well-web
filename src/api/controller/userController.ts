@@ -67,8 +67,6 @@ export class UserController {
   public async createUserWithRoleClient(req: IRequest, res: IResponse) {
     const {newUserData} = req.body;
 
-    console.log('newUserData: ', newUserData);
-
     const {result: newUser, status, failure} = await this.userService.createUserWithRoleClient(
       newUserData,
     );
