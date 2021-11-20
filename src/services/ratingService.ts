@@ -37,13 +37,13 @@ export class RatingService implements IRatingService {
         failure: {reason: GetRatingOfUserFailure.UserNotFound},
       };
     }
-    const test = rating.map((user) => user.rating);
+    const ratingOfUser = rating.map((user) => user.rating);
 
-    console.log(test);
+    const ratingAverage = ratingOfUser.reduce((prev, curr) => prev + curr) / ratingOfUser.length;
 
     return {
       status: ServiceResponseStatus.Success,
-      result: rating,
+      result: ratingAverage,
     };
   }
 

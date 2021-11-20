@@ -93,6 +93,10 @@ export class UserService implements IUserService {
     userId: string,
   ): Promise<ServiceResponse<any, ServiceFailure<GetUserFailure>>> {
     const user = await this.userRepository.getUserById(userId);
+    const rating = await this.ratingRepository.getRatingOfUser(userId);
+    const ratingOfUser = rating.map((ratingUser) => ratingUser.rating);
+
+    const ratingAverage = ratingOfUser.reduce((prev, curr) => prev + curr) / ratingOfUser.length;
     const roleName: any = user['role'];
     const nameRole = roleName.map((i) => i.name);
 
@@ -102,10 +106,11 @@ export class UserService implements IUserService {
         failure: {reason: GetUserFailure.UserNotFound},
       };
     }
+    delete user.password;
 
     return {
       status: ServiceResponseStatus.Success,
-      result: {...user, role: nameRole},
+      result: {...user, role: nameRole, ratingAverage: ratingAverage},
     };
   }
 
