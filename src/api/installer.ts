@@ -17,6 +17,7 @@ import container from './containerInstaller';
 import userRouter from './routes/userRoute';
 import authRouter from './routes/authRoute';
 import roleRouter from './routes/roleRoute';
+import ratingRouter from './routes/ratingRoute';
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(isAuth);
 app.use(withCurrentUser);
 app.use('/api/roles', roleRouter);
 app.use('/api/users', userRouter);
+app.use('/api/ratings', ratingRouter);
 
 app.use((err, req: IRequest, res: IResponse, next) => {
   if (err.name === 'UnauthorizedError') {

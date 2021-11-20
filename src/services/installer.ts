@@ -1,5 +1,6 @@
 import {DependencyContainer} from 'tsyringe';
 
+import {IRatingService, RatingService} from './ratingService';
 import {AuthService, IAuthService} from './authService';
 import {IRoleService, RoleService} from './roleService';
 import {IUserService, UserService} from './userService';
@@ -14,5 +15,8 @@ export async function install(container: DependencyContainer) {
     })
     .register<IRoleService>('IRoleService', {
       useClass: RoleService,
+    })
+    .register<IRatingService>('IRatingService', {
+      useClass: RatingService,
     });
 }
