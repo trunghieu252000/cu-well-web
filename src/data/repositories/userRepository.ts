@@ -37,7 +37,7 @@ export class UserRepository
     return await this.model
       .findById(id)
       .populate('role', 'name')
-      .select('-_id -password -activatedUser -createdAt -updatedAt -__v')
+      .select('-activatedUser -createdAt -updatedAt -__v')
       .lean()
       .exec();
   }
@@ -46,7 +46,7 @@ export class UserRepository
     return await this.model
       .findOne({email})
       .populate('role', 'name')
-      .select('-_id -password -activatedUser -createdAt -updatedAt -__v')
+      .select('-activatedUser -createdAt -updatedAt -__v')
       .lean()
       .exec();
   }
