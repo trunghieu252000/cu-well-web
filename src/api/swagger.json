@@ -169,14 +169,14 @@
                     }
                 } }
         },    
-        "/users/change-password":{
+        "/users/password":{
             "post": {
                 "tags": [
                     "Users"
                 ],
-                "summary": "Forgot password",
+                "summary": "Change password",
                 "requestBody": {
-                    "description": "Forgot password Data",
+                    "description": "Change password Data",
                     "required": true,
                     "content": {
                         "application/json": {
