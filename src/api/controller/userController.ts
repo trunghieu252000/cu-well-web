@@ -1,4 +1,5 @@
 import {inject, injectable} from 'tsyringe';
+import mongoose from 'mongoose';
 
 import {ServiceResponseStatus} from '../../services/types/serviceResponse';
 import {
@@ -32,9 +33,21 @@ export class UserController {
   }
 
   public async getUserDetails(req: IRequest, res: IResponse) {
-    const {userId} = req.params;
+    const userId =
+      req.params.userId.match(/^[0-9a-fA-F]{24}$/) && mongoose.Types.ObjectId(req.params.id);
 
-    const {result: user, status, failure} = await this.userService.getUserDetails(userId);
+    if (!userId) {
+      return res.send(
+        NotFoundResult({
+          reason: GetUserFailure.UserNotFound,
+          message: 'User not found',
+        }),
+      );
+    }
+
+    const {result: user, status, failure} = await this.userService.getUserDetails(
+      userId.toHexString(),
+    );
 
     if (status === ServiceResponseStatus.Failed) {
       switch (failure.reason) {
@@ -96,11 +109,21 @@ export class UserController {
   }
 
   public async updateUser(req: IRequest, res: IResponse) {
-    const {userId} = req.params;
     const {userData} = req.body;
 
+    const userId =
+      req.params.userId.match(/^[0-9a-fA-F]{24}$/) && mongoose.Types.ObjectId(req.params.id);
+
+    if (!userId) {
+      return res.send(
+        NotFoundResult({
+          reason: GetUserFailure.UserNotFound,
+          message: 'User not found',
+        }),
+      );
+    }
     const {result: updatedUser, status, failure} = await this.userService.updateUser(
-      userId,
+      userId.toHexString(),
       userData,
     );
 
