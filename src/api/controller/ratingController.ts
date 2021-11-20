@@ -16,7 +16,7 @@ export class RatingController {
 
   public async getRatingOfUser(req: IRequest, res: IResponse) {
     const userId =
-      req.params.userId.match(/^[0-9a-fA-F]{24}$/) && mongoose.Types.ObjectId(req.params.id);
+      req.params.userId.match(/^[0-9a-fA-F]{24}$/) && mongoose.Types.ObjectId(req.params.userId);
 
     if (!userId) {
       return res.send(
@@ -30,6 +30,7 @@ export class RatingController {
       userId.toHexString(),
     );
 
+    console.log('userId.toHexString(): ', userId.toHexString());
     if (status === ServiceResponseStatus.Failed) {
       switch (failure.reason) {
         case GetRatingOfUserFailure.UserNotFound:

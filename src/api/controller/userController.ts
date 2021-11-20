@@ -34,7 +34,7 @@ export class UserController {
 
   public async getUserDetails(req: IRequest, res: IResponse) {
     const userId =
-      req.params.userId.match(/^[0-9a-fA-F]{24}$/) && mongoose.Types.ObjectId(req.params.id);
+      req.params.userId.match(/^[0-9a-fA-F]{24}$/) && mongoose.Types.ObjectId(req.params.userId);
 
     if (!userId) {
       return res.send(
@@ -112,7 +112,7 @@ export class UserController {
     const {userData} = req.body;
 
     const userId =
-      req.params.userId.match(/^[0-9a-fA-F]{24}$/) && mongoose.Types.ObjectId(req.params.id);
+      req.params.userId.match(/^[0-9a-fA-F]{24}$/) && mongoose.Types.ObjectId(req.params.userId);
 
     if (!userId) {
       return res.send(

@@ -37,6 +37,9 @@ export class RatingService implements IRatingService {
         failure: {reason: GetRatingOfUserFailure.UserNotFound},
       };
     }
+    const test = rating.map((user) => user.rating);
+
+    console.log(test);
 
     return {
       status: ServiceResponseStatus.Success,
