@@ -7,14 +7,6 @@ export enum Role {
   Employee = 'Employee',
 }
 
-export const Rating = createSchema(
-  {
-    userId: Type.objectId({required: true}),
-    rating: Type.number({required: true}),
-  },
-  {_id: false},
-);
-
 export const UserSchema = createSchema(
   {
     email: Type.string({
@@ -26,7 +18,6 @@ export const UserSchema = createSchema(
     name: Type.string({required: true}),
     phone: Type.string({required: true}),
     role: Type.array().of(Type.ref(Type.objectId()).to('Role', RoleSchema)),
-    ratingAverage: Type.array().of(Rating),
     address: {
       city: Type.string({required: true}),
       district: Type.string({required: true}),

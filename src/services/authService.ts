@@ -6,7 +6,6 @@ import Joi from 'joi';
 import bcrypt from 'bcryptjs';
 
 import config from '../config';
-// import {IRoleRepository} from '../data/repositories/roleRepository';
 import {IUserRepository} from '../data/repositories/userRepository';
 import {User} from '../data/schemas';
 import {hashPassword} from '../utils/password';
@@ -54,7 +53,6 @@ export interface IAuthService {
 @injectable()
 export class AuthService implements IAuthService {
   constructor(
-    // @inject('IRoleRepository') private roleRepository: IRoleRepository,
     @inject('IUserRepository') private userRepository: IUserRepository,
     @inject('IUserMailerSender') private userMailerReceiver: IUserMailerSender,
   ) {}
@@ -146,6 +144,8 @@ export class AuthService implements IAuthService {
         failure: {reason: AuthenticationFailure.ForBiddenAccess},
       };
     }
+    console.log('user.password: ', user.password);
+    console.log('loginData.password: ', loginData.password);
     const isMatch = await bcrypt.compare(loginData.password, user.password);
 
     if (!isMatch) {
@@ -165,7 +165,6 @@ export class AuthService implements IAuthService {
       name: user.name,
     };
 
-    console.log('tokenData: ', tokenData);
     const token = this.generateToken(tokenData);
 
     return {

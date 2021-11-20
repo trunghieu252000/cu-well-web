@@ -10,6 +10,7 @@ export enum JoiSchema {
   newUserData = 'newUserData',
   userStatusData = 'userStatusData',
   userData = 'userData',
+  ratingData = 'ratingData',
 }
 
 export function joiValidator(schema: any, param: string) {
@@ -82,6 +83,14 @@ export const JoiValidationSchema = {
       district: Joi.string().required(),
       commune: Joi.string().required(),
     },
+  })
+    .required()
+    .options({abortEarly: false}),
+
+  ratingData: Joi.object({
+    userId: Joi.string().required(),
+    ratingUserId: Joi.string().required(),
+    rating: Joi.number().required(),
   })
     .required()
     .options({abortEarly: false}),

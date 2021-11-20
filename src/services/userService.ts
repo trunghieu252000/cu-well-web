@@ -8,6 +8,7 @@ import {User} from '../data/schemas';
 import {IUserMailerSender} from '../infrastructure/mailer';
 import {hashPassword} from '../utils/password';
 
+import {IRatingRepository} from './../data/repositories/ratingRepository';
 import {IUserRepository} from './../data/repositories/userRepository';
 import {ServiceFailure, ServiceResponse, ServiceResponseStatus} from './types/serviceResponse';
 export enum GetUserFailure {
@@ -56,6 +57,7 @@ export class UserService implements IUserService {
     @inject('IUserRepository') private userRepository: IUserRepository,
     @inject('IUserMailerSender') private userMailerReceiver: IUserMailerSender,
     @inject('IRoleRepository') private roleRepository: IRoleRepository,
+    @inject('IRatingRepository') private ratingRepository: IRatingRepository,
   ) {}
 
   public async createUserWithRoleClient(
@@ -68,7 +70,6 @@ export class UserService implements IUserService {
       ...userData,
       activatedUser: true,
       password: hashedPassword,
-      ratingAverage: [],
       role: [clientRoleId],
     };
 
@@ -94,8 +95,6 @@ export class UserService implements IUserService {
     const user = await this.userRepository.getUserById(userId);
     const roleName: any = user['role'];
     const nameRole = roleName.map((i) => i.name);
-    const rating = user.ratingAverage.map((i) => i.rating);
-    const ratingAver = rating.reduce((prev, curr) => prev + curr) / rating.length;
 
     if (!user) {
       return {
@@ -106,7 +105,7 @@ export class UserService implements IUserService {
 
     return {
       status: ServiceResponseStatus.Success,
-      result: {...user, role: nameRole, ratingAverage: ratingAver},
+      result: {...user, role: nameRole},
     };
   }
 
@@ -201,8 +200,6 @@ export class UserService implements IUserService {
     for (let i = 0; i < users.length; i++) {
       const roleName: any = users[i]['role'];
       const nameRole = roleName.map((role) => role.name);
-      const rating = users[i].ratingAverage.map((aver) => aver.rating);
-      const ratingAver = rating.reduce((prev, curr) => prev + curr) / rating.length;
       const userDetails = {
         id: users[i]['_id'],
         email: users[i]['email'],
@@ -210,7 +207,6 @@ export class UserService implements IUserService {
         phone: users[i]['phone'],
         address: users[i]['address'],
         role: nameRole,
-        ratingAverage: ratingAver,
       };
 
       usersLists.push(userDetails);

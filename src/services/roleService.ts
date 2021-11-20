@@ -25,8 +25,6 @@ export class RoleService implements IRoleService {
   public async createRole(
     role: Role,
   ): Promise<ServiceResponse<Role, ServiceFailure<CreateRoleFailure>>> {
-    console.log('role.name: ', role.name);
-
     const roleExisted = await this.roleRepository.checkRoleExistence(role.name);
 
     if (roleExisted) {
@@ -35,8 +33,6 @@ export class RoleService implements IRoleService {
         failure: {reason: CreateRoleFailure.RoleAlreadyExisted},
       };
     }
-    console.log('role', role);
-    console.log('this.roleRepository: ', this.roleRepository);
 
     await this.roleRepository.create(role);
 
