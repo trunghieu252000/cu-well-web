@@ -200,18 +200,43 @@ export class UserService implements IUserService {
 
   public async getAllUsers(): Promise<ServiceResponse> {
     const users = await this.userRepository.getAllUsers();
+    const ratingOfAllUsers = await this.ratingRepository.getRatingOfAllUsers();
+
+    for (const index in users) {
+      if (index < ratingOfAllUsers.length) {
+        for (const i in users) {
+          if (users[i]._id.toString() == ratingOfAllUsers[index]._id.toString()) {
+            console.log('users[i]._id.toString(): ', users[i]._id.toString());
+            console.log(ratingOfAllUsers[index].ratings.map((temp) => temp.rating));
+          }
+        }
+      } else console.log(`users[${index}]._id`, users[index]._id);
+    }
+
     const usersLists = [];
 
-    for (let i = 0; i < users.length; i++) {
-      const roleName: any = users[i]['role'];
+    for (const index in users) {
+      let ratingOfUser = 0;
+      const roleName: any = users[index]['role'];
       const nameRole = roleName.map((role) => role.name);
+
+      if (index < ratingOfAllUsers.length) {
+        for (const i in users) {
+          if (users[i]._id.toString() == ratingOfAllUsers[index]._id.toString()) {
+            const rating = ratingOfAllUsers[index].ratings.map((temp) => temp.rating);
+
+            ratingOfUser = rating.reduce((prev, curr) => prev + curr) / rating.length;
+          }
+        }
+      }
       const userDetails = {
-        id: users[i]['_id'],
-        email: users[i]['email'],
-        name: users[i]['name'],
-        phone: users[i]['phone'],
-        address: users[i]['address'],
+        id: users[index]['_id'],
+        email: users[index]['email'],
+        name: users[index]['name'],
+        phone: users[index]['phone'],
+        address: users[index]['address'],
         role: nameRole,
+        ratingAverage: ratingOfUser,
       };
 
       usersLists.push(userDetails);

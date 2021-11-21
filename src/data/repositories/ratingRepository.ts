@@ -13,6 +13,7 @@ export type RatingDocument = ExtractDoc<typeof RatingSchema>;
 export interface IRatingRepository extends IRepositoryBase<Rating, RatingDocument> {
   getRatingOfUser(userId: string): Promise<any>;
   updateRatingForUser(userId: string, ratingUserId: string, rating: number): Promise<any>;
+  getRatingOfAllUsers(): Promise<any>;
 }
 
 @injectable()
@@ -31,6 +32,22 @@ export class RatingRepository
     const ratingOfUser = await this.model.find({userId}).lean().exec();
 
     return ratingOfUser;
+  }
+
+  public async getRatingOfAllUsers(): Promise<any> {
+    // const ratingOfAllUsers = await this.model.find().lean().exec();
+    const ratingOfAllUsers = await this.model.aggregate([
+      {
+        $group: {
+          _id: '$userId',
+          ratings: {
+            $push: '$$ROOT',
+          },
+        },
+      },
+    ]);
+
+    return ratingOfAllUsers;
   }
 
   public async updateRatingForUser(
