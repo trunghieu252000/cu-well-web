@@ -12,6 +12,7 @@ const userController = container.resolve(UserController);
 router.get('/user-roles/:userId', wrapper(userController.getAllRoleNameOfUser));
 
 router.get('/:userId', wrapper(userController.getUserDetails));
+router.get('/seller/:userId', wrapper(userController.getUserDetails));
 
 router.get('/', wrapper(userController.getAllUsers));
 
