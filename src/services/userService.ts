@@ -94,9 +94,17 @@ export class UserService implements IUserService {
   ): Promise<ServiceResponse<any, ServiceFailure<GetUserFailure>>> {
     const user = await this.userRepository.getUserById(userId);
     const rating = await this.ratingRepository.getRatingOfUser(userId);
-    const ratingOfUser = rating.map((ratingUser) => ratingUser.rating);
 
-    const ratingAverage = ratingOfUser.reduce((prev, curr) => prev + curr) / ratingOfUser.length;
+    console.log('rating: ', rating);
+    let ratingAverage;
+
+    if (rating.length === 0) {
+      ratingAverage = 0;
+    } else {
+      const ratingOfUser = rating.map((ratingUser) => ratingUser.rating);
+
+      ratingAverage = ratingOfUser.reduce((prev, curr) => prev + curr) / ratingOfUser.length;
+    }
     const roleName: any = user['role'];
     const nameRole = roleName.map((i) => i.name);
 
