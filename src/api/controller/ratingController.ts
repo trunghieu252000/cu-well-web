@@ -30,7 +30,6 @@ export class RatingController {
       userId.toHexString(),
     );
 
-    console.log('userId.toHexString(): ', userId.toHexString());
     if (status === ServiceResponseStatus.Failed) {
       switch (failure.reason) {
         case GetRatingOfUserFailure.UserNotFound:

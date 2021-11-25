@@ -17,7 +17,6 @@ export class RoleController {
   public async createRole(req: IRequest, res: IResponse) {
     const {role} = req.body;
 
-    console.log('roleController: ', role);
     const {result: newRole, status, failure} = await this.roleService.createRole(role);
 
     if (status === ServiceResponseStatus.Failed) {

@@ -49,6 +49,7 @@ export interface IUserService {
     oldPassword: string,
   ): Promise<ServiceResponse<ServiceFailure<ChangePasswordFailure>>>;
   getAllUsers(): Promise<ServiceResponse>;
+  getSeller(userId: string): Promise<ServiceResponse<User, ServiceFailure<GetUserFailure>>>;
 }
 
 @injectable()
@@ -95,7 +96,6 @@ export class UserService implements IUserService {
     const user = await this.userRepository.getUserById(userId);
     const rating = await this.ratingRepository.getRatingOfUser(userId);
 
-    console.log('rating: ', rating);
     let ratingAverage;
 
     if (rating.length === 0) {
@@ -115,10 +115,44 @@ export class UserService implements IUserService {
       };
     }
     delete user.password;
+    delete user._id;
 
     return {
       status: ServiceResponseStatus.Success,
       result: {...user, role: nameRole, ratingAverage: ratingAverage},
+    };
+  }
+
+  public async getSeller(
+    userId: string,
+  ): Promise<ServiceResponse<any, ServiceFailure<GetUserFailure>>> {
+    const user = await this.userRepository.getUserById(userId);
+    const rating = await this.ratingRepository.getRatingOfUser(userId);
+
+    let ratingAverage;
+
+    if (rating.length === 0) {
+      ratingAverage = 0;
+    } else {
+      const ratingOfUser = rating.map((ratingUser) => ratingUser.rating);
+
+      ratingAverage = ratingOfUser.reduce((prev, curr) => prev + curr) / ratingOfUser.length;
+    }
+
+    if (!user) {
+      return {
+        status: ServiceResponseStatus.Failed,
+        failure: {reason: GetUserFailure.UserNotFound},
+      };
+    }
+    delete user.password;
+    delete user._id;
+    delete user.role;
+    delete user.email;
+
+    return {
+      status: ServiceResponseStatus.Success,
+      result: {...user, ratingAverage: ratingAverage},
     };
   }
 
@@ -143,17 +177,18 @@ export class UserService implements IUserService {
   public async updateUser(
     userId: string,
     userData: User,
-  ): Promise<ServiceResponse<User, ServiceFailure<UpdateUserFailure>>> {
+  ): Promise<ServiceResponse<any, ServiceFailure<UpdateUserFailure>>> {
     const userExisted = await this.userRepository.getUserById(userId);
 
-    if (userExisted) {
+    if (!userExisted) {
       return {
         status: ServiceResponseStatus.Failed,
         failure: {reason: UpdateUserFailure.UserNotFound},
       };
     }
 
-    const updatedUser = await this.userRepository.updateUserById(userId, userData);
+    await this.userRepository.updateUserById(userId, userData);
+    const updatedUser = await this.getUserDetails(userId);
 
     return {
       status: ServiceResponseStatus.Success,
@@ -167,7 +202,7 @@ export class UserService implements IUserService {
   ): Promise<ServiceResponse<User, ServiceFailure<UpdateUserFailure>>> {
     const userExisted = await this.userRepository.getUserById(userId);
 
-    if (userExisted) {
+    if (!userExisted) {
       return {
         status: ServiceResponseStatus.Failed,
         failure: {reason: UpdateUserFailure.UserNotFound},
@@ -210,17 +245,6 @@ export class UserService implements IUserService {
     const users = await this.userRepository.getAllUsers();
     const ratingOfAllUsers = await this.ratingRepository.getRatingOfAllUsers();
 
-    for (const index in users) {
-      if (index < ratingOfAllUsers.length) {
-        for (const i in users) {
-          if (users[i]._id.toString() == ratingOfAllUsers[index]._id.toString()) {
-            console.log('users[i]._id.toString(): ', users[i]._id.toString());
-            console.log(ratingOfAllUsers[index].ratings.map((temp) => temp.rating));
-          }
-        }
-      } else console.log(`users[${index}]._id`, users[index]._id);
-    }
-
     const usersLists = [];
 
     for (const index in users) {
@@ -238,7 +262,6 @@ export class UserService implements IUserService {
         }
       }
       const userDetails = {
-        id: users[index]['_id'],
         email: users[index]['email'],
         name: users[index]['name'],
         phone: users[index]['phone'],

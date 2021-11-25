@@ -30,6 +30,7 @@ export class UserController {
     this.getAllRoleNameOfUser = this.getAllRoleNameOfUser.bind(this);
     this.changePassword = this.changePassword.bind(this);
     this.getAllUsers = this.getAllUsers.bind(this);
+    this.getSeller = this.getSeller.bind(this);
   }
 
   public async getUserDetails(req: IRequest, res: IResponse) {
@@ -48,6 +49,36 @@ export class UserController {
     const {result: user, status, failure} = await this.userService.getUserDetails(
       userId.toHexString(),
     );
+
+    if (status === ServiceResponseStatus.Failed) {
+      switch (failure.reason) {
+        case GetUserFailure.UserNotFound:
+          return res.send(
+            NotFoundResult({
+              reason: failure.reason,
+              message: 'User not founds',
+            }),
+          );
+      }
+    }
+
+    return res.send(OkResult(user));
+  }
+
+  public async getSeller(req: IRequest, res: IResponse) {
+    const userId =
+      req.params.userId.match(/^[0-9a-fA-F]{24}$/) && mongoose.Types.ObjectId(req.params.userId);
+
+    if (!userId) {
+      return res.send(
+        NotFoundResult({
+          reason: GetUserFailure.UserNotFound,
+          message: 'User not found',
+        }),
+      );
+    }
+
+    const {result: user, status, failure} = await this.userService.getSeller(userId.toHexString());
 
     if (status === ServiceResponseStatus.Failed) {
       switch (failure.reason) {
@@ -145,7 +176,7 @@ export class UserController {
   public async updateStatusOfUser(req: IRequest, res: IResponse) {
     const {userStatusData} = req.body;
 
-    const {result: updatedUser, status, failure} = await this.userService.updateStatusOfUser(
+    const {status, failure} = await this.userService.updateStatusOfUser(
       userStatusData.userId,
       userStatusData.status,
     );
@@ -162,12 +193,16 @@ export class UserController {
       }
     }
 
-    return res.send(OkResult(updatedUser));
+    return res.send(NoContentResult());
   }
 
   public async changePassword(req: IRequest, res: IResponse) {
     const {email} = req.user;
+
+    console.log('email: ', email);
     const {oldPassword, newPassword} = req.body.changePasswordData;
+
+    console.log('oldPassword: ', oldPassword);
 
     const {status, failure} = await this.userService.changePassword(
       email,

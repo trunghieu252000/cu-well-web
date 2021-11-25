@@ -78,6 +78,7 @@ export const JoiValidationSchema = {
   userData: Joi.object({
     name: Joi.string().required(),
     phone: Joi.string().required(),
+    ratingAverage: Joi.number().required(),
     address: {
       city: Joi.string().required(),
       district: Joi.string().required(),

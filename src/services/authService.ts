@@ -144,8 +144,6 @@ export class AuthService implements IAuthService {
         failure: {reason: AuthenticationFailure.ForBiddenAccess},
       };
     }
-    console.log('user.password: ', user.password);
-    console.log('loginData.password: ', loginData.password);
     const isMatch = await bcrypt.compare(loginData.password, user.password);
 
     if (!isMatch) {

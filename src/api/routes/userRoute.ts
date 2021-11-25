@@ -12,20 +12,19 @@ const userController = container.resolve(UserController);
 router.get('/user-roles/:userId', wrapper(userController.getAllRoleNameOfUser));
 
 router.get('/:userId', wrapper(userController.getUserDetails));
-router.get('/seller/:userId', wrapper(userController.getUserDetails));
+router.get('/seller/:userId', wrapper(userController.getSeller));
 
+router.put(
+  '/status',
+  joiValidator(JoiValidationSchema.userStatusData, JoiSchema.userStatusData),
+  wrapper(userController.updateStatusOfUser),
+);
 router.get('/', wrapper(userController.getAllUsers));
 
 router.put(
   '/:userId',
   joiValidator(JoiValidationSchema.userData, JoiSchema.userData),
   wrapper(userController.updateUser),
-);
-
-router.patch(
-  '/user-status',
-  joiValidator(JoiValidationSchema.userStatusData, JoiSchema.userStatusData),
-  wrapper(userController.updateStatusOfUser),
 );
 
 router.patch(

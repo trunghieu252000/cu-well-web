@@ -267,7 +267,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/userDetails"
+                                "$ref": "#/definitions/updateUserData"
                             }
                         }
                     }
@@ -353,31 +353,14 @@
                         }
                     }
                 },
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "userId",
-                        "required": true,
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/id"
-                        }
-                    }
-                ],
                 "produces": [
                     "application/json"
                 ],
                 "responses": {
-                    "200": {
-                        "statusCode": "200",
-                        "description": "Ok",
-                        "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/definitions/userStatus"
-                            }
-                        }
-                    }
+                    "204": {
+                        "statusCode": "204",
+                        "description": "No Content"
+                        
                     },
                     "500": {
                         "statusCode": "500",
@@ -386,14 +369,14 @@
                 }
             }
         },
-        "/users/rating":{
-            "put": {
+        "/ratings":{
+            "patch": {
                 "tags": [
-                    "Users"
+                    "Ratings"
                 ],
                 "summary": "Update rating of User",
                 "requestBody": {
-                    "description": "User status",
+                    "description": "User rating",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -403,15 +386,38 @@
                         }
                     }
                 },
+                "produces": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "204": {
+                        "statusCode": "204",
+                        "description": "No Content"                     
+                    },
+                    "404": {
+                        "statusCode": "404",
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Ratings"
+                ],
+                "summary": "Get rating of User",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "userId",
                         "required": true,
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/id"
-                        }
+                        "description": ""
                     }
                 ],
                 "produces": [
@@ -422,15 +428,18 @@
                 ],
                 "responses": {
                     "200": {
-                        "statusCode": "200",
-                        "description": "Ok",
+                        "description": "OK",
                         "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/definitions/userRating"
+                                "$ref": "#/definitions/ratingResult"
                             }
                         }
                     }
+                    },
+                    "404": {
+                        "statusCode": "404",
+                        "description": "User not found"
                     },
                     "500": {
                         "statusCode": "500",
@@ -504,6 +513,22 @@
                     "type": "string"
                 }
               }            
+        },
+        "userStatus":{
+            "type": "object",
+            "properties": {  
+                "userStatusData":{
+                  "type": "object", 
+                  "properties": {
+                    "userId": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "boolean"
+                    }
+                  } 
+                }  
+            }         
         },
         "newUserData":{
             "type": "object",
@@ -580,6 +605,39 @@
               }
             }
         },
+        "updateUserData":{
+            "type": "object",
+            "properties": {
+              "userData":{
+                "type": "object",
+                "properties": {
+                  "name": {
+                      "type": "string"
+                  },
+                  "phone": {
+                      "type": "string"
+                  },
+                  "ratingAverage": {
+                      "type": "number"
+                  },
+                  "address":{
+                    "type": "object",
+                    "properties": {
+                      "city": {
+                          "type": "string"
+                      },
+                      "district": {
+                          "type": "string"
+                      },
+                      "commune": {
+                          "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        },
         "changePassword":{
             "type": "object",
             "properties": {
@@ -593,6 +651,35 @@
                     "type": "string"
                 }
               }}
+            }
+        },
+        "userRating":{
+            "type": "object",
+            "properties": {
+              "ratingData":{
+                "type": "object",
+                "properties": {
+                "userId": {
+                    "type": "string"
+                },
+                "ratingUserId": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "number"
+                }
+              }}
+            }
+        },
+        "ratingResult":{
+            "type": "object",
+            "properties": {
+              "statusCode":{
+                "type": "number"
+              },
+              "payload": {
+                "type": "number"
+              } 
             }
         },
         "loginResult":{
