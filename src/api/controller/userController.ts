@@ -199,10 +199,7 @@ export class UserController {
   public async changePassword(req: IRequest, res: IResponse) {
     const {email} = req.user;
 
-    console.log('email: ', email);
     const {oldPassword, newPassword} = req.body.changePasswordData;
-
-    console.log('oldPassword: ', oldPassword);
 
     const {status, failure} = await this.userService.changePassword(
       email,

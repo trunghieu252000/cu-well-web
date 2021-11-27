@@ -27,7 +27,7 @@ router.put(
   wrapper(userController.updateUser),
 );
 
-router.patch(
+router.put(
   '/password',
   joiValidator(JoiValidationSchema.changePasswordData, JoiSchema.changePasswordData),
   wrapper(userController.changePassword),
