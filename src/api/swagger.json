@@ -511,7 +511,7 @@
                 "tags": [
                     "Admin"
                 ],
-                "summary": "Update status of User",
+                "summary": "Block User",
                 "requestBody": {
                     "description": "User status",
                     "required": true,
