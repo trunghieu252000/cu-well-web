@@ -448,6 +448,97 @@
                 }
             }
         },
+        "/admin/users":{
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get all users in system",
+                "responses": {
+                  "200": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Users"
+                            }
+                        }
+                    }
+                  },
+                  "400": {
+                        "statusCode": "400",
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+              }
+          
+            }
+        },
+        "/admin/sell-users":{
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get user sell best in system",
+                "responses": {
+                  "200": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Users"
+                            }
+                        }
+                    }
+                  },
+                  "400": {
+                        "statusCode": "400",
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+              }
+          
+            }
+        },
+        "/admin/user":{
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Update status of User",
+                "requestBody": {
+                    "description": "User status",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/userStatus"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "204": {
+                        "statusCode": "204",
+                        "description": "No Content"
+                        
+                    },
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+                }
+            }
+        },
         "/users/seller":{
             "parameters": [
                 {
