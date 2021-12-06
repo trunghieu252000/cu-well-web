@@ -170,7 +170,7 @@
                 } }
         },    
         "/users/password":{
-            "put": {
+            "patch": {
                 "tags": [
                     "Users"
                 ],
