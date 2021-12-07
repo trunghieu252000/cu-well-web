@@ -406,7 +406,9 @@
                         "description": "Server Errors"
                     }
                 }
-            },
+            }
+        },
+        "/ratings/{userId}":{
             "get": {
                 "tags": [
                     "Ratings"
