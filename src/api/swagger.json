@@ -256,7 +256,7 @@
                     }
                 }
             },
-            "patch": {
+            "put": {
                 "summary": "Update User with userId",
                 "tags": [
                     "Users"
