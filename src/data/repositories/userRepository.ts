@@ -18,6 +18,7 @@ export interface IUserRepository
   getRoleNameByUserId(userId: string): Promise<string[]>;
   updateUserById(userId: string, user: User): Promise<User>;
   updateStatusOfUser(userId: string, status: boolean): Promise<User>;
+  statisticUserCreated(): Promise<any>;
 }
 @injectable()
 export class UserRepository
@@ -75,5 +76,38 @@ export class UserRepository
       .findByIdAndUpdate(userId, {activatedUser: status}, {new: true})
       .lean()
       .exec();
+  }
+
+  private getFirstAndLastDayOfYear(year: number): {firstDay: Date; lastDay: Date} {
+    const firstDay = new Date(year, 0, 1);
+    const lastDay = new Date(year, 11, 31);
+
+    return {firstDay, lastDay};
+  }
+
+  public async statisticUserCreated(): Promise<any> {
+    const today = new Date();
+    const year = today.getFullYear();
+    const {firstDay, lastDay} = this.getFirstAndLastDayOfYear(year);
+    const user = this.model.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: firstDay,
+            $lt: lastDay,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            month: {$month: '$createdAt'},
+          },
+          count: {$sum: 1},
+        },
+      },
+    ]);
+
+    return user;
   }
 }

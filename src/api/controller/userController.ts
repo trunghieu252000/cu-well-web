@@ -33,6 +33,13 @@ export class UserController {
     this.getAllUsers = this.getAllUsers.bind(this);
     this.getSeller = this.getSeller.bind(this);
     this.statisticUserByPost = this.statisticUserByPost.bind(this);
+    this.statisticUserCreated = this.statisticUserCreated.bind(this);
+  }
+
+  public async statisticUserCreated(req: IRequest, res: IResponse) {
+    const users = await this.userService.statisticUserCreated();
+
+    return res.send(OkResult(users.result));
   }
 
   public async statisticUserByPost(req: IRequest, res: IResponse) {

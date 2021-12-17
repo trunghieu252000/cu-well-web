@@ -14,7 +14,7 @@ router.get('/user-roles/:userId', wrapper(userController.getAllRoleNameOfUser));
 router.get('/:userId', wrapper(userController.getUserDetails));
 router.get('/seller/:userId', wrapper(userController.getSeller));
 router.get('/statistic/number-of-post', wrapper(userController.statisticUserByPost));
-
+router.get('/statistic/user-created', wrapper(userController.statisticUserCreated));
 router.put(
   '/status',
   joiValidator(JoiValidationSchema.userStatusData, JoiSchema.userStatusData),

@@ -51,6 +51,7 @@ export interface IUserService {
   ): Promise<ServiceResponse<ServiceFailure<ChangePasswordFailure>>>;
   getAllUsers(): Promise<ServiceResponse>;
   getSeller(userId: string): Promise<ServiceResponse<User, ServiceFailure<GetUserFailure>>>;
+  statisticUserCreated(): Promise<ServiceResponse>;
 }
 
 @injectable()
@@ -283,6 +284,74 @@ export class UserService implements IUserService {
     return {
       result: usersLists,
       status: ServiceResponseStatus.Success,
+    };
+  }
+
+  private convertNumberToMonthName(month) {
+    const monthName = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    return monthName[month - 1];
+  }
+
+  public async statisticUserCreated(): Promise<ServiceResponse> {
+    const userCreated = await this.userRepository.statisticUserCreated();
+    const months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const monthInDatabase = [];
+
+    for (let i = 0; i < userCreated.length; i++) {
+      monthInDatabase.push(userCreated[i]._id.month);
+    }
+
+    const difference = months
+      .filter((x) => !monthInDatabase.includes(x))
+      .concat(monthInDatabase.filter((x) => !months.includes(x)));
+
+    const countUserCreated = [];
+
+    for (let i = 0; i < monthInDatabase.length; i++) {
+      const user = {
+        name: userCreated[i]._id.month,
+        'Active User': userCreated[i].count,
+      };
+
+      countUserCreated.push(user);
+    }
+    for (let i = 0; i < difference.length; i++) {
+      const user = {
+        name: difference[i],
+        'Active User': 0,
+      };
+
+      countUserCreated.push(user);
+    }
+    const mothSorted = countUserCreated.sort((a, b) => (a.name > b.name && 1) || -1);
+    const result = [];
+
+    for (let i = 0; i < mothSorted.length; i++) {
+      const user = {
+        name: this.convertNumberToMonthName(mothSorted[i].name),
+        'Active User': mothSorted[i]['Active User'],
+      };
+
+      result.push(user);
+    }
+
+    return {
+      status: ServiceResponseStatus.Success,
+      result: result,
     };
   }
 }

@@ -479,6 +479,35 @@
           
             }
         },
+        "/users/statistic/user-created":{
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Statistics of new users by month of the year",
+                "responses": {
+                  "200": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/UserCreated"
+                            }
+                        }
+                    }
+                  },
+                  "400": {
+                        "statusCode": "400",
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+              }
+          
+            }
+        },
         "/admin/sell-users":{
             "get": {
                 "tags": [
@@ -802,6 +831,28 @@
             }
         
         },
+        "UserCreated":{
+            "type": "object",
+            "properties": {
+              "statusCode":{
+                "type": "number"
+              },
+              "payload": {
+                "type": "array",
+                  "items": {
+                    "type":"object",
+                      "properties": {
+                        "name":{
+                          "type": "string"
+                        },
+                        "count":{
+                          "type": "number"
+                        }
+                  }
+              }                     
+            }
+        
+        },
         "newUserResult":{
             "type": "object",
             "properties": {
@@ -902,5 +953,5 @@
                 }
             }
         }
-    }
+    }}
 }
