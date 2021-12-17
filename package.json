@@ -27,7 +27,7 @@
         "@types/mongoose-aggregate-paginate-v2": "1.0.3",
         "aws-sdk": "2.602.0",
         "aws-serverless-express": "3.3.3",
-        "axios": "0.19.1",
+        "axios": "^0.19.1",
         "bcryptjs": "2.4.3",
         "body-parser": "1.19.0",
         "class-validator": "0.13.1",

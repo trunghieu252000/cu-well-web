@@ -19,4 +19,5 @@ export default {
     user: 'cuwellpbl6@gmail.com',
     pass: 'Cuwell@9999',
   },
+  paypalMail: 'cuwellpbl6@gmail.com',
 };

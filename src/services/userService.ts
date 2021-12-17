@@ -7,6 +7,7 @@ import {IRoleRepository} from '../data/repositories/roleRepository';
 import {User} from '../data/schemas';
 import {IUserMailerSender} from '../infrastructure/mailer';
 import {hashPassword} from '../utils/password';
+import config from '../config';
 
 import {IRatingRepository} from './../data/repositories/ratingRepository';
 import {IUserRepository} from './../data/repositories/userRepository';
@@ -119,7 +120,12 @@ export class UserService implements IUserService {
 
     return {
       status: ServiceResponseStatus.Success,
-      result: {...user, role: nameRole, ratingAverage: ratingAverage},
+      result: {
+        ...user,
+        role: nameRole,
+        ratingAverage: ratingAverage,
+        paypalEmail: config.paypalMail,
+      },
     };
   }
 
@@ -152,7 +158,7 @@ export class UserService implements IUserService {
 
     return {
       status: ServiceResponseStatus.Success,
-      result: {...user, ratingAverage: ratingAverage},
+      result: {...user, ratingAverage: ratingAverage, paypalEmail: config.paypalMail},
     };
   }
 
@@ -262,6 +268,7 @@ export class UserService implements IUserService {
         }
       }
       const userDetails = {
+        userId: users[index]['_id'],
         email: users[index]['email'],
         name: users[index]['name'],
         phone: users[index]['phone'],

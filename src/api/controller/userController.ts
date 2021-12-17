@@ -1,5 +1,6 @@
 import {inject, injectable} from 'tsyringe';
 import mongoose from 'mongoose';
+import axios, {AxiosResponse} from 'axios';
 
 import {ServiceResponseStatus} from '../../services/types/serviceResponse';
 import {
@@ -31,6 +32,36 @@ export class UserController {
     this.changePassword = this.changePassword.bind(this);
     this.getAllUsers = this.getAllUsers.bind(this);
     this.getSeller = this.getSeller.bind(this);
+    this.statisticUserByPost = this.statisticUserByPost.bind(this);
+  }
+
+  public async statisticUserByPost(req: IRequest, res: IResponse) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${req.token}`,
+      },
+    };
+
+    console.log('Role', req.user.role);
+    console.log('----------------------');
+    console.log('User', req.user);
+    console.log('=================');
+    console.log('Token:', req.token);
+
+    try {
+      const response: AxiosResponse<any> = await axios.get(
+        'https://cuwell-post-service.herokuapp.com/api/v1/statistics/users/number-of-posts/',
+        config,
+      );
+
+      return res.send(OkResult(response.data));
+    } catch (err) {
+      return res.send(
+        BadRequestResult({
+          message: 'ERROR',
+        }),
+      );
+    }
   }
 
   public async getUserDetails(req: IRequest, res: IResponse) {
