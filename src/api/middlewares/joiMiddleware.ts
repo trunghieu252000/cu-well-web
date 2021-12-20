@@ -79,6 +79,7 @@ export const JoiValidationSchema = {
     name: Joi.string().required(),
     phone: Joi.string().required(),
     ratingAverage: Joi.number().required(),
+    paypalEmail: Joi.string().required(),
     address: {
       city: Joi.string().required(),
       district: Joi.string().required(),

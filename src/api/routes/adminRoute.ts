@@ -9,13 +9,14 @@ import {UserController} from './../controller/userController';
 const router = express.Router();
 const userController = container.resolve(UserController);
 
+router.post(
+  '/',
+  joiValidator(JoiValidationSchema.newUserData, JoiSchema.newUserData),
+  wrapper(userController.createUserWithRoleAdmin),
+);
 router.get('/statistic/sell-users', wrapper(userController.statisticUserByPost));
 router.get('/statistic/users-created', wrapper(userController.statisticUserCreated));
-router.put(
-  '/user/status',
-  joiValidator(JoiValidationSchema.userStatusData, JoiSchema.userStatusData),
-  wrapper(userController.updateStatusOfUser),
-);
+router.put('/status/:userId', wrapper(userController.blockUser));
 router.get('/users', wrapper(userController.getAllUsers));
 
 export default router;

@@ -438,6 +438,54 @@
                 }
             }
         },
+        "/admin/": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Create User with role Admin",
+                "requestBody": {
+                    "description": "New User Data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/newUserData"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "statusCode": "200",
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/newUserResult"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "statusCode": "400",
+                        "description": "Bad Request"
+                    },
+                    "409": {
+                        "statusCode": "409",
+                        "description": "Conflict Result"
+                    },
+
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+                }
+            }
+        },
         "/admin/users": {
             "get": {
                 "tags": [
@@ -525,23 +573,19 @@
 
             }
         },
-        "/admin/user/status": {
+        "/admin/user/status/{userId}": {
             "put": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Block User",
-                "requestBody": {
-                    "description": "User status",
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/definitions/userStatus"
-                            }
-                        }
+                "parameters": [{
+                        "in": "path",
+                        "name": "userId",
+                        "required": true
+
                     }
-                },
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -722,6 +766,9 @@
                             "type": "string"
                         },
                         "phone": {
+                            "type": "string"
+                        },
+                        "paypalEmail": {
                             "type": "string"
                         },
                         "ratingAverage": {

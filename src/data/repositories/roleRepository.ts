@@ -14,6 +14,7 @@ export interface IRoleRepository extends IRepositoryBase<Role, RoleDocument> {
   getAllRoles(): Promise<Role[]>;
   checkRoleExistence(roleName: string): Promise<Role>;
   getIdRoleClient(): Promise<Role>;
+  getIdRoleAdmin(): Promise<Role>;
 }
 
 @injectable()
@@ -40,5 +41,9 @@ export class RoleRepository extends RepositoryBase<Role, RoleDocument> implement
 
   public async getIdRoleClient(): Promise<Role> {
     return await this.model.findOne({name: 'Client'}).lean().exec();
+  }
+
+  public async getIdRoleAdmin(): Promise<Role> {
+    return await this.model.findOne({name: 'Admin'}).lean().exec();
   }
 }

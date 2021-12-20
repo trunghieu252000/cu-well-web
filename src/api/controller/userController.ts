@@ -26,8 +26,10 @@ import {
 export class UserController {
   constructor(@inject('IUserService') private userService: IUserService) {
     this.createUserWithRoleClient = this.createUserWithRoleClient.bind(this);
+    this.createUserWithRoleAdmin = this.createUserWithRoleAdmin.bind(this);
     this.updateUser = this.updateUser.bind(this);
     this.updateStatusOfUser = this.updateStatusOfUser.bind(this);
+    this.blockUser = this.blockUser.bind(this);
     this.getUserDetails = this.getUserDetails.bind(this);
     this.getAllRoleNameOfUser = this.getAllRoleNameOfUser.bind(this);
     this.changePassword = this.changePassword.bind(this);
@@ -193,6 +195,37 @@ export class UserController {
     return res.send(OkResult(newUser));
   }
 
+  public async createUserWithRoleAdmin(req: IRequest, res: IResponse) {
+    const {newUserData} = req.body;
+    const role = [...req.user.role];
+
+    if (!role.includes('Admin')) {
+      return res.send(
+        ForbiddenResult({
+          reason: 'Forbidden',
+          message: 'Only Admin can access this api ',
+        }),
+      );
+    }
+    const {result: newUser, status, failure} = await this.userService.createUserWithRoleAdmin(
+      newUserData,
+    );
+
+    if (status === ServiceResponseStatus.Failed) {
+      switch (failure.reason) {
+        case CreateUserFailure.UserAlreadyExists:
+          return res.send(
+            ConflictResult({
+              reason: failure.reason,
+              message: `User with email ${newUserData.email} already exists`,
+            }),
+          );
+      }
+    }
+
+    return res.send(OkResult(newUser));
+  }
+
   public async updateUser(req: IRequest, res: IResponse) {
     const {userData} = req.body;
 
@@ -234,6 +267,36 @@ export class UserController {
       userStatusData.userId,
       userStatusData.status,
     );
+
+    if (status === ServiceResponseStatus.Failed) {
+      switch (failure.reason) {
+        case UpdateUserFailure.UserNotFound:
+          return res.send(
+            NotFoundResult({
+              reason: failure.reason,
+              message: 'User not found',
+            }),
+          );
+      }
+    }
+
+    return res.send(NoContentResult());
+  }
+
+  public async blockUser(req: IRequest, res: IResponse) {
+    const {userId} = req.params;
+    const role = [...req.user.role];
+
+    if (!role.includes('Admin')) {
+      return res.send(
+        ForbiddenResult({
+          reason: 'Forbidden',
+          message: 'Only Admin can access this api ',
+        }),
+      );
+    }
+
+    const {status, failure} = await this.userService.updateStatusOfUser(userId, false);
 
     if (status === ServiceResponseStatus.Failed) {
       switch (failure.reason) {
