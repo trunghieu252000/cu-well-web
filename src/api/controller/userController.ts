@@ -49,12 +49,6 @@ export class UserController {
       },
     };
 
-    console.log('Role', req.user.role);
-    console.log('----------------------');
-    console.log('User', req.user);
-    console.log('=================');
-    console.log('Token:', req.token);
-
     try {
       const response: AxiosResponse<any> = await axios.get(
         'https://cuwell-post-service.herokuapp.com/api/v1/statistics/users/number-of-posts/',
