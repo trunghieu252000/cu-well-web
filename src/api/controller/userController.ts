@@ -19,6 +19,7 @@ import {
   ConflictResult,
   BadRequestResult,
   NoContentResult,
+  ForbiddenResult,
 } from './../httpResponses';
 
 @injectable()
@@ -37,9 +38,20 @@ export class UserController {
   }
 
   public async statisticUserCreated(req: IRequest, res: IResponse) {
-    const users = await this.userService.statisticUserCreated();
+    const role = [...req.user.role];
 
-    return res.send(OkResult(users.result));
+    if (role.includes('Admin')) {
+      const users = await this.userService.statisticUserCreated();
+
+      return res.send(OkResult(users.result));
+    } else {
+      return res.send(
+        ForbiddenResult({
+          reason: 'Forbidden',
+          message: 'Only Admin can access this api ',
+        }),
+      );
+    }
   }
 
   public async statisticUserByPost(req: IRequest, res: IResponse) {
@@ -48,18 +60,28 @@ export class UserController {
         Authorization: `Bearer ${req.token}`,
       },
     };
+    const role = [...req.user.role];
 
-    try {
-      const response: AxiosResponse<any> = await axios.get(
-        'https://cuwell-post-service.herokuapp.com/api/v1/statistics/users/number-of-posts/',
-        config,
-      );
+    if (role.includes('Admin')) {
+      try {
+        const response: AxiosResponse<any> = await axios.get(
+          'https://cuwell-post-service.herokuapp.com/api/v1/statistics/users/number-of-posts/',
+          config,
+        );
 
-      return res.send(OkResult(response.data));
-    } catch (err) {
+        return res.send(OkResult(response.data));
+      } catch (err) {
+        return res.send(
+          BadRequestResult({
+            message: 'ERROR',
+          }),
+        );
+      }
+    } else {
       return res.send(
-        BadRequestResult({
-          message: 'ERROR',
+        ForbiddenResult({
+          reason: 'Forbidden',
+          message: 'Only Admin can access this api ',
         }),
       );
     }
