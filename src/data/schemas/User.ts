@@ -24,6 +24,7 @@ export const UserSchema = createSchema(
       commune: Type.string({required: true}),
     },
     activatedUser: Type.boolean({required: true}),
+    paypalEmail: Type.string(),
   },
   {timestamps: true, versionKey: false, strict: false, strictQuery: true},
 );
