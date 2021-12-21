@@ -14,11 +14,11 @@ import {interceptResponse} from './middlewares/interceptResponse';
 import {IRequest, IResponse} from './types';
 import {ServerErrorResult} from './httpResponses';
 import container from './containerInstaller';
+import adminRouter from './routes/adminRoute';
 import userRouter from './routes/userRoute';
 import authRouter from './routes/authRoute';
 import roleRouter from './routes/roleRoute';
 import ratingRouter from './routes/ratingRoute';
-import adminRouter from './routes/adminRoute';
 
 const app = express();
 
@@ -39,8 +39,8 @@ app.use('/api/auth', authRouter);
 app.use(isAuth);
 app.use(withCurrentUser);
 app.use('/api/admin', adminRouter);
-app.use('/api/roles', roleRouter);
 app.use('/api/users', userRouter);
+app.use('/api/roles', roleRouter);
 app.use('/api/ratings', ratingRouter);
 
 app.use((err, req: IRequest, res: IResponse, next) => {

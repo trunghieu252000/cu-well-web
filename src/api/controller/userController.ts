@@ -42,6 +42,8 @@ export class UserController {
   public async statisticUserCreated(req: IRequest, res: IResponse) {
     const role = [...req.user.role];
 
+    console.log('role: ', role);
+
     if (role.includes('Admin')) {
       const users = await this.userService.statisticUserCreated();
 
@@ -70,8 +72,23 @@ export class UserController {
           'https://cuwell-post-service.herokuapp.com/api/v1/statistics/users/number-of-posts/',
           config,
         );
+        const {result: user, status, failure} = await this.userService.statisticUserByPost(
+          response.data,
+        );
 
-        return res.send(OkResult(response.data));
+        if (status === ServiceResponseStatus.Failed) {
+          switch (failure.reason) {
+            case GetUserFailure.UserNotFound:
+              return res.send(
+                NotFoundResult({
+                  reason: failure.reason,
+                  message: 'Bad request',
+                }),
+              );
+          }
+        }
+
+        return res.send(OkResult(user));
       } catch (err) {
         return res.send(
           BadRequestResult({
@@ -112,7 +129,7 @@ export class UserController {
           return res.send(
             NotFoundResult({
               reason: failure.reason,
-              message: 'User not founds',
+              message: 'User not found',
             }),
           );
       }

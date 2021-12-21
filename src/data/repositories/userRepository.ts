@@ -19,6 +19,7 @@ export interface IUserRepository
   updateUserById(userId: string, user: User): Promise<User>;
   updateStatusOfUser(userId: string, status: boolean): Promise<User>;
   statisticUserCreated(): Promise<any>;
+  statisticUserByPost(data: string[]): Promise<any>;
 }
 @injectable()
 export class UserRepository
@@ -50,6 +51,10 @@ export class UserRepository
       .select('-activatedUser -createdAt -updatedAt -__v')
       .lean()
       .exec();
+  }
+
+  public async statisticUserByPost(data: string[]): Promise<any> {
+    return await this.model.find({_id: data}).lean().exec();
   }
 
   public async getAllUsers(): Promise<User[]> {

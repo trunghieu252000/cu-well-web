@@ -2,6 +2,7 @@ import crypto from 'crypto';
 
 import bcrypt from 'bcryptjs';
 import {inject, injectable} from 'tsyringe';
+import mongoose from 'mongoose';
 
 import {IRoleRepository} from '../data/repositories/roleRepository';
 import {User} from '../data/schemas';
@@ -58,6 +59,7 @@ export interface IUserService {
   getAllUsers(): Promise<ServiceResponse>;
   getSeller(userId: string): Promise<ServiceResponse<User, ServiceFailure<GetUserFailure>>>;
   statisticUserCreated(): Promise<ServiceResponse>;
+  statisticUserByPost(data: any): Promise<any>;
 }
 
 @injectable()
@@ -68,6 +70,16 @@ export class UserService implements IUserService {
     @inject('IRoleRepository') private roleRepository: IRoleRepository,
     @inject('IRatingRepository') private ratingRepository: IRatingRepository,
   ) {}
+
+  public async statisticUserByPost(data: any): Promise<any> {
+    const userIds = data.map((userData) => userData.user);
+    const ids = userIds ? userIds.map(mongoose.Types.ObjectId) : [];
+    const dataResult = await this.userRepository.statisticUserByPost(ids);
+
+    console.log('dataResult: ', dataResult);
+
+    console.log('ratingOfUser: ', ids);
+  }
 
   public async createUserWithRoleClient(
     userData: User,
@@ -136,6 +148,13 @@ export class UserService implements IUserService {
     const user = await this.userRepository.getUserById(userId);
     const rating = await this.ratingRepository.getRatingOfUser(userId);
 
+    if (!user) {
+      return {
+        status: ServiceResponseStatus.Failed,
+        failure: {reason: GetUserFailure.UserNotFound},
+      };
+    }
+
     let ratingAverage;
 
     if (rating.length === 0) {
@@ -148,12 +167,6 @@ export class UserService implements IUserService {
     const roleName: any = user['role'];
     const nameRole = roleName.map((i) => i.name);
 
-    if (!user) {
-      return {
-        status: ServiceResponseStatus.Failed,
-        failure: {reason: GetUserFailure.UserNotFound},
-      };
-    }
     delete user.password;
     delete user._id;
 
@@ -173,6 +186,12 @@ export class UserService implements IUserService {
     const user = await this.userRepository.getUserById(userId);
     const rating = await this.ratingRepository.getRatingOfUser(userId);
 
+    if (!user) {
+      return {
+        status: ServiceResponseStatus.Failed,
+        failure: {reason: GetUserFailure.UserNotFound},
+      };
+    }
     let ratingAverage;
 
     if (rating.length === 0) {
@@ -183,12 +202,6 @@ export class UserService implements IUserService {
       ratingAverage = ratingOfUser.reduce((prev, curr) => prev + curr) / ratingOfUser.length;
     }
 
-    if (!user) {
-      return {
-        status: ServiceResponseStatus.Failed,
-        failure: {reason: GetUserFailure.UserNotFound},
-      };
-    }
     delete user.password;
     delete user._id;
     delete user.role;
