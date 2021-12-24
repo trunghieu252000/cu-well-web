@@ -573,6 +573,35 @@
 
             }
         },
+        "/admin/statistic/buyer": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get buyer best in system",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/definitions/Users"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "statusCode": "400",
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "statusCode": "500",
+                        "description": "Server Errors"
+                    }
+                }
+
+            }
+        },
         "/admin/user/status/{userId}": {
             "put": {
                 "tags": [

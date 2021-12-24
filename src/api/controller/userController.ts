@@ -36,13 +36,12 @@ export class UserController {
     this.getAllUsers = this.getAllUsers.bind(this);
     this.getSeller = this.getSeller.bind(this);
     this.statisticUserByPost = this.statisticUserByPost.bind(this);
+    this.statisticBuyer = this.statisticBuyer.bind(this);
     this.statisticUserCreated = this.statisticUserCreated.bind(this);
   }
 
   public async statisticUserCreated(req: IRequest, res: IResponse) {
     const role = [...req.user.role];
-
-    console.log('role: ', role);
 
     if (role.includes('Admin')) {
       const users = await this.userService.statisticUserCreated();
@@ -73,6 +72,54 @@ export class UserController {
           config,
         );
         const {result: user, status, failure} = await this.userService.statisticUserByPost(
+          response.data,
+        );
+
+        if (status === ServiceResponseStatus.Failed) {
+          switch (failure.reason) {
+            case GetUserFailure.UserNotFound:
+              return res.send(
+                NotFoundResult({
+                  reason: failure.reason,
+                  message: 'Bad request',
+                }),
+              );
+          }
+        }
+
+        return res.send(OkResult(user));
+      } catch (err) {
+        return res.send(
+          BadRequestResult({
+            message: 'ERROR',
+          }),
+        );
+      }
+    } else {
+      return res.send(
+        ForbiddenResult({
+          reason: 'Forbidden',
+          message: 'Only Admin can access this api ',
+        }),
+      );
+    }
+  }
+
+  public async statisticBuyer(req: IRequest, res: IResponse) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${req.token}`,
+      },
+    };
+    const role = [...req.user.role];
+
+    if (role.includes('Admin')) {
+      try {
+        const response: AxiosResponse<any> = await axios.get(
+          'https://cuwell-post-service.herokuapp.com/api/v1/statistics/users/number-of-orders/',
+          config,
+        );
+        const {result: user, status, failure} = await this.userService.statisticBuyer(
           response.data,
         );
 

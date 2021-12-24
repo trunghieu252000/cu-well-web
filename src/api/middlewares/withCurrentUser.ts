@@ -9,6 +9,7 @@ import {AuthenticationFailure} from './../../services/authService';
 export default async (req: IRequest, res: IResponse, next) => {
   const userService = container.resolve(UserService);
   const decodedUser = req.token.user;
+
   const user = (await userService.getUserDetails(decodedUser.id.toString())).result;
   let token;
 

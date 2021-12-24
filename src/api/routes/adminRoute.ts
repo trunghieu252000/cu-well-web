@@ -11,6 +11,7 @@ const userController = container.resolve(UserController);
 
 router.get('/users', wrapper(userController.getAllUsers));
 router.get('/statistic/sell-users', wrapper(userController.statisticUserByPost));
+router.get('/statistic/buyer', wrapper(userController.statisticBuyer));
 router.get('/statistic/users-created', wrapper(userController.statisticUserCreated));
 router.put('/status/:userId', wrapper(userController.blockUser));
 

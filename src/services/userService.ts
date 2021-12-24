@@ -60,6 +60,7 @@ export interface IUserService {
   getSeller(userId: string): Promise<ServiceResponse<User, ServiceFailure<GetUserFailure>>>;
   statisticUserCreated(): Promise<ServiceResponse>;
   statisticUserByPost(data: any): Promise<any>;
+  statisticBuyer(data: any): Promise<any>;
 }
 
 @injectable()
@@ -76,9 +77,52 @@ export class UserService implements IUserService {
     const ids = userIds ? userIds.map(mongoose.Types.ObjectId) : [];
     const dataResult = await this.userRepository.statisticUserByPost(ids);
 
-    console.log('dataResult: ', dataResult);
+    const test = [];
 
-    console.log('ratingOfUser: ', ids);
+    for (let i = 0; i < data.length; i++) {
+      for (let d = 0; d < dataResult.length; d++) {
+        if (data[d].user === dataResult[i]._id.toHexString()) {
+          const a = {
+            id: data[d].user,
+            name: dataResult[i].name,
+            email: dataResult[i].email,
+            post: data[d].number_of_posts,
+          };
+
+          test.push(a);
+        }
+      }
+    }
+    const mothSorted = test.sort((a, b) => (a.post > b.post && 1) || -1);
+
+    return {status: ServiceResponseStatus.Success, result: mothSorted.reverse()};
+  }
+
+  public async statisticBuyer(data: any): Promise<any> {
+    console.log('data: ', data);
+    const userIds = data.map((userData) => userData.payment__buyer);
+    const ids = userIds ? userIds.map(mongoose.Types.ObjectId) : [];
+    const dataResult = await this.userRepository.statisticUserByPost(ids);
+
+    const test = [];
+
+    for (let i = 0; i < data.length; i++) {
+      for (let d = 0; d < dataResult.length; d++) {
+        if (data[d].payment__buyer === dataResult[i]._id.toHexString()) {
+          const a = {
+            id: data[d].payment__buyer,
+            name: dataResult[i].name,
+            email: dataResult[i].email,
+            post: data[d].number_of_orders,
+          };
+
+          test.push(a);
+        }
+      }
+    }
+    const mothSorted = test.sort((a, b) => (a.post > b.post && 1) || -1);
+
+    return {status: ServiceResponseStatus.Success, result: mothSorted.reverse()};
   }
 
   public async createUserWithRoleClient(
