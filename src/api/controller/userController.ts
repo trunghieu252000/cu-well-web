@@ -71,6 +71,8 @@ export class UserController {
           'https://cuwell-post-service.herokuapp.com/api/v1/statistics/users/number-of-posts/',
           config,
         );
+
+        console.log('response: ', response.status);
         const {result: user, status, failure} = await this.userService.statisticUserByPost(
           response.data,
         );
@@ -350,8 +352,43 @@ export class UserController {
   public async blockUser(req: IRequest, res: IResponse) {
     const {userId} = req.params;
     const role = [...req.user.role];
+    const config = {
+      headers: {
+        Authorization: `Bearer ${req.token}`,
+      },
+    };
 
-    if (!role.includes('Admin')) {
+    if (role.includes('Admin')) {
+      try {
+        const {status, failure} = await this.userService.updateStatusOfUser(userId, false);
+
+        if (status === ServiceResponseStatus.Failed) {
+          switch (failure.reason) {
+            case UpdateUserFailure.UserNotFound:
+              return res.send(
+                NotFoundResult({
+                  reason: failure.reason,
+                  message: 'User not found',
+                }),
+              );
+          }
+        }
+        const response: AxiosResponse<any> = await axios.delete(
+          `https://cuwell-post-service.herokuapp.com/api/v1/users/${userId}`,
+          config,
+        );
+
+        console.log(response);
+
+        return res.send(NoContentResult());
+      } catch (err) {
+        return res.send(
+          BadRequestResult({
+            message: 'ERROR',
+          }),
+        );
+      }
+    } else {
       return res.send(
         ForbiddenResult({
           reason: 'Forbidden',
@@ -360,21 +397,30 @@ export class UserController {
       );
     }
 
-    const {status, failure} = await this.userService.updateStatusOfUser(userId, false);
+    // if (!role.includes('Admin')) {
+    //   return res.send(
+    //     ForbiddenResult({
+    //       reason: 'Forbidden',
+    //       message: 'Only Admin can access this api ',
+    //     }),
+    //   );
+    // }
 
-    if (status === ServiceResponseStatus.Failed) {
-      switch (failure.reason) {
-        case UpdateUserFailure.UserNotFound:
-          return res.send(
-            NotFoundResult({
-              reason: failure.reason,
-              message: 'User not found',
-            }),
-          );
-      }
-    }
+    // const {status, failure} = await this.userService.updateStatusOfUser(userId, false);
 
-    return res.send(NoContentResult());
+    // if (status === ServiceResponseStatus.Failed) {
+    //   switch (failure.reason) {
+    //     case UpdateUserFailure.UserNotFound:
+    //       return res.send(
+    //         NotFoundResult({
+    //           reason: failure.reason,
+    //           message: 'User not found',
+    //         }),
+    //       );
+    //   }
+    // }
+
+    // return res.send(NoContentResult());
   }
 
   public async changePassword(req: IRequest, res: IResponse) {
